@@ -1,0 +1,37 @@
+// GOBBLE RUN — The Great Turkey Escape
+// Run 1,200 m to Freedom Forest while a farmer gives chase. Jump or double-jump
+// with Up, W, Space, or a click. Hold Down or S to slide below a carving knife
+// or squeeze under an oven. Left/Right or A/D adjust pace, as do the mouse buttons.
+// Corn adds score and a burst of speed. Golden corn buys extra breathing room.
+// Each stumble costs a heart and brings the farmer closer. Survive to earn a
+// 500-point escape bonus. Both endings offer an instant rematch.
+// Original Canvas 2D art, layered farm scenery and synthesized Web Audio cues.
+// The sound button toggles audio. Serve locally with node serve.ts.
+
+import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { buildDossier } from './vendor/makefun-game.ts';
+
+const here = fileURLToPath(new URL('.', import.meta.url));
+const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+
+mkdirSync(out, { recursive: true });
+cpSync(join(here, 'game'), join(out, 'game'), { recursive: true });
+mkdirSync(join(out, 'screenshots'), { recursive: true });
+if (existsSync(join(here, 'screenshots'))) cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
+
+// The scorer's own caps (reference/gate.json): only text_max_bytes shapes the bytes; the others refuse an entry the
+// scorer would refuse (more than 4 screenshots or one over 256 KiB; more than 993 files in game/ or 48 MiB of game
+// files, in all, or a path under game/ over 1000 bytes: game/ counts beside /output's own 1000-entry cap, its
+// screenshots/ and dossier.json).
+writeFileSync(
+  join(out, 'dossier.json'),
+  buildDossier(out, {
+    text_max_bytes: 163840,
+    screenshots: { max: 4, max_bytes: 262144 },
+    game_max_files: 993,
+    game_max_bytes: 50331648,
+    game_path_max_bytes: 1000,
+  }),
+);

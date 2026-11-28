@@ -2,23 +2,22 @@ import { box, label, path, stroke } from './ink.js';
 
 const cream = '#fff0cc';
 const gold = '#ffc765';
-const dark = '#362422';
 
 function borderButton(c, x, y, w, h, hot) {
-  box(c,x,y,w,h,'#ca9061',8);
-  box(c,x+1,y+1,w-2,h-2,hot?'#754535':'#482d26',7);
+  box(c,x,y,w,h,'#cd945d');
+  box(c,x+1,y+1,w-2,h-2,hot?'#754535':'#39201d');
 }
 
 export function drawControls(c, screen, muted, hover) {
   if (screen !== 'play') {
     const title = screen === 'title';
-    box(c,80,533,307,69,'#603b29',9);
-    box(c,80,528,307,69,dark,9);
-    box(c,82,530,303,65,hover==='go'?'#ffe29c':'#ffca6d',7);
-    label(c,title?'RUN FOR IT':'RUN AGAIN',100,556,23,dark);
-    label(c,title?'Press SPACE or click to run':'Press SPACE or click to restart',100,580,14,dark,{weight:700});
-    stroke(c,dark,3.2,[[336,562],[361,562]]);
-    stroke(c,dark,3.2,[[352,553],[361,562],[352,571]]);
+    box(c,54,535,329,68,'#c69159');
+    box(c,49,528,329,68,hover==='go'?'#643125':'#301e1c');
+    box(c,49,528,7,68,'#992e20');
+    label(c,title?'RUN FOR IT':'RUN AGAIN',70,557,25,cream);
+    label(c,title?'Press SPACE or click to run':'Press SPACE or click to restart',70,580,14,gold,{weight:700});
+    stroke(c,cream,3.2,[[336,562],[361,562]]);
+    stroke(c,cream,3.2,[[352,553],[361,562],[352,571]]);
     if (title) {
       const sections = [
         [80,'JUMP ×2','↑ / W / SPACE / CLICK'],

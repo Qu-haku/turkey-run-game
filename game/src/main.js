@@ -15,7 +15,7 @@ const params = new URLSearchParams(location.search);
 const requestedShot = params.get('shot');
 const shotAliases = { 1: 'start', 2: 'play', 3: 'caught', 4: 'escaped' };
 const normalizedShot = Object.hasOwn(shotAliases, requestedShot) ? shotAliases[requestedShot] : requestedShot;
-const shot = ['start','play','end','caught','escaped'].includes(normalizedShot) ? normalizedShot : 'start';
+const shot = ['start','play','end','caught','escaped','near-goal'].includes(normalizedShot) ? normalizedShot : 'start';
 const seedParam = params.get('seed');
 const seed = seedParam !== null && Number.isFinite(Number(seedParam)) ? Number(seedParam) | 0 :
   requestedShot ? 1 : Date.now() | 0;
@@ -33,7 +33,7 @@ function updateScreen() {
   frame.dataset.screen = screen;
   go.setAttribute('aria-label', screen === 'title' ? 'Run for it' : 'Run again');
   hover = '';
-  status.textContent = screen === 'title' ? 'Gobble Run. Press space or click to run.' :
+  status.textContent = screen === 'title' ? 'Turkey on the Run. Press space or click to run.' :
     screen === 'play' ? 'Run started. Jump with space or click. Slide with down.' :
       `${screen === 'escaped' ? 'Escaped' : 'Caught'}. Score ${totalScore(run)}. Distance ${Math.floor(run.distance)} metres.`;
 }

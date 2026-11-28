@@ -1,4 +1,4 @@
-# Gobble Run — The Great Turkey Escape
+# Turkey on the Run — The Great Escape to Freedom Forest
 
 [![make.fun · turkey-run-game-01](https://make.fun/badge/turkey-run-game-01.svg)](https://make.fun/bounty/turkey-run-game-01?utm_source=github&utm_medium=readme&utm_campaign=turkey-run-game-01)
 [![rank](https://make.fun/badge/turkey-run-game-01/Qu-haku/turkey-run-game/rank.svg)](https://make.fun/bounty/turkey-run-game-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=turkey-run-game-01)
@@ -16,7 +16,7 @@ watch the farmer-proximity meter — if he reaches you, dinner plans are back on
 ## Play
 
 - Serve the game locally: `node serve.ts`, then open http://localhost:8080
-  (or open `game/index.html` in a desktop browser — it runs fully offline).
+  The game uses local assets and needs no internet connection.
 - Controls: ↑ / W / Space / click to jump (twice for a double jump),
   ↓ / S to slide, ← → / A D to change pace. On-screen buttons work too.
 - Title screen, HUD (score, hearts, distance to Freedom Forest, farmer meter),

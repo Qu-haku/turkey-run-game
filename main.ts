@@ -1,4 +1,4 @@
-// GOBBLE RUN — The Great Turkey Escape
+// TURKEY ON THE RUN — The Great Escape to Freedom Forest
 // Run 1,200 m to Freedom Forest while a farmer gives chase. Jump or double-jump
 // with Up, W, Space, or a click. Hold Down or S to slide below a carving knife
 // or squeeze under an oven. Left/Right or A/D adjust pace, as do the mouse buttons.

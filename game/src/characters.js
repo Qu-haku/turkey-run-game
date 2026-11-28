@@ -21,13 +21,18 @@ function tail(c, time) {
 }
 
 export function turkey(c, x, y, scale, time, pose = {}) {
-  const { airborne, panic, slide, perched } = pose;
+  const { airborne, panic, slide, perched, relieved, hero } = pose;
   c.save();
   c.translate(x, y);
   c.scale(scale, scale);
   if (slide) c.transform(1.13, 0, -.24, .55, 0, 1);
   const beat = time * 17;
-  const stride = perched ? 2 : airborne ? 20 : Math.sin(beat) * 24;
+  if (!airborne && !perched && !slide) {
+    const stretch = Math.cos(beat*2);
+    c.scale(1-stretch*.085,1+stretch*.09);
+  }
+  if (hero) c.transform(1,0,-.17,1,0,0);
+  const stride = perched ? 2 : hero ? 36 : airborne ? 20 : Math.sin(beat) * 28;
   c.translate(0, airborne || perched || slide ? 0 : -Math.abs(Math.cos(beat)) * 3);
   tail(c, time);
   for (const side of [-1, 1]) {
@@ -55,10 +60,19 @@ export function turkey(c, x, y, scale, time, pose = {}) {
   shape(c, '#bc3530', p => { p.moveTo(44,-68); p.bezierCurveTo(55,-63,43,-51,48,-45); p.bezierCurveTo(29,-43,36,-63,40,-68); });
   path(c, ink, [[44,-77],[63,-69],[46,-59],[41,-65]]);
   path(c, '#ffc254', [[45,-74],[58,-69],[45,-63]]);
-  oval(c, 35, -74, panic ? 12 : 9, panic ? 12 : 9, cream);
-  oval(c, panic ? 39 : 38, -74, 4.3, 5, ink);
-  oval(c, 40, -76, 1.5, 1.5, '#fff');
-  if (panic) stroke(c, ink, 2.6, [[24,-85],[33,-90],[42,-87]]);
+  if (relieved) {
+    stroke(c,ink,3,[[28,-74],[32,-78],[38,-79],[43,-75]]);
+    stroke(c,ink,2,[[43,-65],[49,-65],[53,-68]]);
+  } else {
+    oval(c,35,-74,panic?13:9,panic?13:9,cream);
+    oval(c,panic?31:39,-74,panic?3.6:4.3,5,ink);
+    oval(c,panic?32:40,-76,1.5,1.5,'#fff');
+    if (panic) {
+      stroke(c,ink,2.6,[[21,-86],[31,-93],[43,-89]]);
+      path(c,'#641f21',[[45,-69],[58,-69],[52,-63],[45,-60]]);
+      oval(c,18,-89,2.5,4.3,'#ffe6ad',-.6);
+    } else if (hero) stroke(c,ink,3.2,[[26,-85],[42,-80]]);
+  }
   c.restore();
 }
 

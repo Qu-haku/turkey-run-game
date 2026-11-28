@@ -1,5 +1,5 @@
 import { createRandom } from './random.js';
-import { WIDTH, HEIGHT, GROUND } from './config.js';
+import { WIDTH, HEIGHT, GROUND, GOAL } from './config.js';
 import { box, oval, path, shape, stroke } from './ink.js';
 
 const mod = (n, d) => ((n % d) + d) % d;
@@ -27,17 +27,12 @@ function barn(c,x,y,s) {
   c.restore();
 }
 
-function mill(c,x,y,time) {
-  path(c,'#753e34',[[x-21,y],[x-9,y-112],[x+8,y-112],[x+23,y]]);
-  path(c,'#ab573b',[[x-14,y],[x-1,y-105],[x+5,y-105],[x+13,y]]);
-  c.save(); c.translate(x,y-111); c.rotate(time*.17+.35);
-  for (let i=0;i<4;i++) {
-    stroke(c,'#683831',3,[[0,0],[0,-65]]);
-    path(c,'#884635',[[0,-20],[0,-65],[12,-60],[10,-23]]);
-    for (let k=26;k<65;k+=9) stroke(c,'#cf8050',1,[[1,-k],[9,-k]]);
-    c.rotate(Math.PI/2);
-  }
-  oval(c,0,0,6,6,'#60332b'); c.restore();
+function silo(c,x,y) {
+  oval(c,x,y-105,23,22,'#713c36');
+  box(c,x-23,y-105,46,105,'#713c36');
+  box(c,x-19,y-104,25,104,'#a6533a');
+  for(let i=19;i<104;i+=17) stroke(c,'#854535',2,[[x-22,y-i],[x+22,y-i]]);
+  stroke(c,'#63342f',3,[[x+13,y],[x+13,y-113]]);
 }
 
 export function pine(c,x,y,h,color) {
@@ -55,22 +50,24 @@ export function forest(c, start, base, color, height) {
   }
 }
 
-export function terrain(c, travel, time, scene) {
+export function terrain(c, travel, scene, distance) {
   const dawn = scene === 'escaped';
   const title = scene === 'title';
+  const approach = scene === 'play' ? Math.max(0,(distance-820)/(GOAL-820)) : 0;
+  const wooded = dawn || approach > .50;
   const sky = c.createLinearGradient(0,0,0,590);
-  sky.addColorStop(0,dawn?'#648a82':'#a73b32');
-  sky.addColorStop(.55,dawn?'#9bb09a':'#e47744');
-  sky.addColorStop(1,dawn?'#f0c686':'#f8b467');
+  sky.addColorStop(0,dawn?'#648a82':'#a83d39');
+  sky.addColorStop(.55,dawn?'#9bb09a':'#ed854c');
+  sky.addColorStop(1,dawn?'#f0c686':'#ffc678');
   box(c,0,0,WIDTH,HEIGHT,sky);
-  const sx = dawn ? 880 : title ? 968 : 910;
-  const sy = dawn ? 370 : title ? 296 : 309;
-  oval(c,sx,sy,183,183,dawn?'#d4c396':'#eb9455');
-  oval(c,sx,sy,158,158,dawn?'#f7d796':'#f4ad61');
-  oval(c,sx,sy,142,142,'#ffd482');
+  const sx = dawn ? 880 : title ? 972 : 962;
+  const sy = dawn ? 370 : title ? 300 : 334;
+  oval(c,sx,sy,226,226,dawn?'#d4c396':'#eb9455');
+  oval(c,sx,sy,198,198,dawn?'#f7d796':'#f4ad61');
+  oval(c,sx,sy,176,176,'#ffd482');
   c.save();
-  c.beginPath(); c.arc(sx,sy,142,0,Math.PI*2); c.clip();
-  for(let i=0;i<8;i++) box(c,sx-150,sy+39+i*13,300,1+i*.35,dawn?'#ebbd7e':'#eba15a');
+  c.beginPath(); c.arc(sx,sy,176,0,Math.PI*2); c.clip();
+  for(let i=0;i<8;i++) box(c,sx-180,sy+39+i*13,360,1+i*.35,dawn?'#ebbd7e':'#eba15a');
   c.restore();
   for(let i=0;i<7;i++) {
     const x=mod(74+i*244-travel*.03,1650)-115;
@@ -78,23 +75,31 @@ export function terrain(c, travel, time, scene) {
   }
   shape(c,dawn?'#7b927e':'#bf6546',p=>{p.moveTo(0,437);p.bezierCurveTo(230,339,342,454,528,420);p.bezierCurveTo(834,333,945,469,1280,374);p.lineTo(1280,586);p.lineTo(0,586);});
   shape(c,dawn?'#526e61':'#9c503c',p=>{p.moveTo(0,492);p.bezierCurveTo(260,390,449,473,686,471);p.bezierCurveTo(960,421,1136,435,1280,473);p.lineTo(1280,604);p.lineTo(0,604);});
-  if (dawn || (scene === 'play' && travel > 12500)) {
-    forest(c,dawn?393:1100-(travel-12500)*.14,556,dawn?'#42695f':'#644a3e',192);
-    forest(c,dawn?609:1180-(travel-12500)*.13,630,dawn?'#244b43':'#3c4d42',270);
+  const treeOffset = mod(travel*.052,1440);
+  for(let i=0;i<38;i++) {
+    const x = mod(i*42-treeOffset,1470)-60;
+    oval(c,x,491+i%3*5,27+i%4*7,13+i%5*5,dawn?'#566d53':'#a5523b');
   }
-  if (!dawn) {
+  if (dawn || approach > 0) {
+    forest(c,dawn?393:1270-approach*1740,556,dawn?'#42695f':'#796048',205);
+    forest(c,dawn?609:1350-approach*1430,630,dawn?'#244b43':'#3f5142',285);
+  }
+  if (!dawn && approach < .58) {
+    c.save();
+    c.globalAlpha = Math.min(1,1.8-approach*3);
     const offset = mod(travel*.105,1440);
     for (const tile of [0,1440]) {
-      const x = (title?579:345)+tile-offset;
-      barn(c,x,501,.91);
-      mill(c,x+188,506,time);
-      oval(c,x-50,501,66,14,'#a25238');
+      const x = (title?648:345)+tile-offset;
+      barn(c,x,510,.91);
+      silo(c,x+160,510);
+      oval(c,x-50,507,66,14,'#a25238');
     }
+    c.restore();
   }
-  shape(c,dawn?'#797c4c':'#c07a3e',p=>{p.moveTo(0,511);p.quadraticCurveTo(321,526,651,501);p.quadraticCurveTo(989,495,1280,529);p.lineTo(1280,651);p.lineTo(0,651);});
+  shape(c,wooded?'#797c4c':'#c07a3e',p=>{p.moveTo(0,551);p.quadraticCurveTo(321,555,651,539);p.quadraticCurveTo(989,535,1280,559);p.lineTo(1280,651);p.lineTo(0,651);});
   for(let i=0;i<9;i++) {
-    const y=520+i*13;
-    shape(c,dawn?(i%2?'#6b7149':'#898251'):(i%2?'#ac6237':'#d18a43'),p=>{
+    const y=549+i*11;
+    shape(c,wooded?(i%2?'#6b7149':'#898251'):(i%2?'#ac6237':'#d18a43'),p=>{
       p.moveTo(0,y+7);p.quadraticCurveTo(600,y-27-i*3,1280,y+5);
       p.lineTo(1280,y+11+i);p.quadraticCurveTo(540,y-12-i*2,0,y+15+i);
     });
@@ -102,13 +107,14 @@ export function terrain(c, travel, time, scene) {
   for(const [pos, h, shade] of grasses) {
     const x=mod(pos-travel*.31,1450)-45;
     const y=587+h*30;
-    const color=dawn?'#505e42':shade>.5?'#a35a32':'#e29a4e';
+    const color=wooded?'#505e42':shade>.5?'#8d4a2e':'#bf7737';
     stroke(c,color,2,[[x,y],[x+2,y-10-shade*10]]);
     oval(c,x-2,y-8,2,6,color,-.65);
     oval(c,x+4,y-13,2,6,color,.68);
+    if (!wooded && shade>.4) oval(c,x+2,y-14,2.5,6,'#f0b653',.26);
   }
   const fenceOffset=mod(travel*.53,174);
-  const rail=dawn?'#515b40':'#8c4b31';
+  const rail=wooded?'#515b40':'#8c4b31';
   stroke(c,rail,9,[[0,597],[WIDTH,596]]);
   stroke(c,rail,7,[[0,620],[WIDTH,618]]);
   for(let x=-fenceOffset;x<WIDTH+25;x+=174){

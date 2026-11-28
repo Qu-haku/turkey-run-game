@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gobble Run — The Great Turkey Escape</title>
+<title>Turkey on the Run — The Great Escape to Freedom Forest</title>
 <link rel="icon" href="data:,">
 <style>
   :root { color-scheme: dark; font-family: system-ui, sans-serif; }
-  body { margin: 0; background: #302421; min-height: 100dvh; display: grid; place-items: center; overflow: hidden; }
+  body { margin: 0; background: #211615; min-height: 100dvh; display: grid; place-items: center; overflow: hidden; }
   #frame { position: relative; width: min(100vw, 160dvh); aspect-ratio: 8 / 5; container-type: inline-size; }
   canvas { display: block; width: 100%; height: 100%; touch-action: none; }
   .overlay { position: absolute; inset: 0; pointer-events: none; }
   button { position: absolute; pointer-events: auto; cursor: pointer; touch-action: none;
     padding: 0; border: 0; background: transparent; color: transparent; }
   button:focus-visible { outline: .24cqw solid #fff2ce; outline-offset: .35cqw; border-radius: .55cqw; }
-  #go { left: 6.25%; top: 66%; width: 24%; height: 8.5%; }
+  #go { left: 3.83%; top: 66%; width: 25.7%; height: 8.5%; }
   #mute { right: 3%; bottom: 5.5%; width: 4.3%; height: 5.85%; }
   .pace { bottom: 5.5%; width: 7.35%; height: 5.2%; }
   [data-hold="slow"] { right: 25%; }
@@ -26,7 +26,7 @@
 </head>
 <body>
 <main id="frame" data-screen="title">
-  <canvas id="game" width="1280" height="800" aria-label="Gobble Run — The Great Turkey Escape"></canvas>
+  <canvas id="game" width="1280" height="800" aria-label="Turkey on the Run — The Great Escape to Freedom Forest"></canvas>
   <div class="overlay">
     <button id="go" type="button" aria-label="Run for it"></button>
     <div id="pad">
